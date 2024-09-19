@@ -19,8 +19,8 @@ export class TaskService {
         })
     }
 
-    async getUserTask(authorId: number) {
-        const taskFound = await this.prismaService.task.findMany({ where: { authorId } })
+    async getUserTask({ authorId, status }: { authorId: number, status: Status }) {
+        const taskFound = await this.prismaService.task.findMany({ where: { authorId, ...(status && { status }) } })
         if (!taskFound) return []
         return taskFound
     }
