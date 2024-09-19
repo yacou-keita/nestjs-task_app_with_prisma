@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, ParseIntPipe, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, ParseIntPipe, Post, Put } from "@nestjs/common";
 import { AuthUser } from "src/core/user.decorator";
 import { CreateTaskDTO } from "src/dtos/create_task.dto";
 import { TaskService } from "src/services/task/task.service";
@@ -18,18 +18,18 @@ export class TaskController {
         return await this.taskService.getUserTask(user.id)
     }
 
-    @Get("/:id/pending")
-    async pendingTask(@AuthUser() user: any, @Param("id",ParseIntPipe) id: number) {
+    @Put("/:id/pending")
+    async pendingTask(@AuthUser() user: any, @Param("id", ParseIntPipe) id: number) {
         return await this.taskService.pendingTask({ authorId: user.id, taskId: id })
     }
 
-    @Get("/:id/starting")
-    async startingTask(@AuthUser() user: any, @Param("id",ParseIntPipe) id: number) {
+    @Put("/:id/starting")
+    async startingTask(@AuthUser() user: any, @Param("id", ParseIntPipe) id: number) {
         return await this.taskService.startingTask({ authorId: user.id, taskId: id })
     }
 
-    @Get("/:id/finishing")
-    async finishingTask(@AuthUser() user: any, @Param("id",ParseIntPipe) id: number) {
+    @Put("/:id/finishing")
+    async finishingTask(@AuthUser() user: any, @Param("id", ParseIntPipe) id: number) {
         return await this.taskService.finishingTask({ authorId: user.id, taskId: id })
     }
 }

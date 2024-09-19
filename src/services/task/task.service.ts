@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotAcceptableException, NotFoundException } from '@nestjs/common';
 import { Status } from '@prisma/client';
 import { ChangeTaskStatusDTO } from 'src/dtos/change_task_status.dto';
 import { CreateTaskDTO } from 'src/dtos/create_task.dto';
@@ -38,6 +38,11 @@ export class TaskService {
     }
 
     private async changeTaskStatus(id: number, authorId: number, status: Status) {
+        const userTask = await this.prismaService.task.findUnique({ where: { id, authorId } })
+        if (!userTask) { return new NotFoundException("Task not found") }
+        if (userTask.status === Status.FINISHED) { return new NotAcceptableException("Task finished") }
+        if (status === Status.FINISHED && userTask.status === Status.PENDING) { return new NotAcceptableException("You can't end this task, starts before") }
+        if (status === Status.PENDING && userTask.status === Status.PENDING) { return new NotAcceptableException("You need start a task before make it in pending") }
         const taskUpdated = await this.prismaService.task.update({ where: { id, authorId }, data: { status: status } });
         return taskUpdated;
     }

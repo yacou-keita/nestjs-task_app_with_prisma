@@ -44,7 +44,7 @@ export class UserService {
 
     private generateToken({ data, key }: { data: string | object, key: string }) {
         return sign(data, key, {
-            expiresIn: "600s"
+            expiresIn: "2h"
         });
     }
     private isEmpty(data): boolean {
